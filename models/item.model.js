@@ -11,7 +11,6 @@ const itemSchema = new mongoose.Schema({
     type: { type: String, enum: ['movie', 'series'], required: true },
     language: [{ 
         type: String,
-        enum: ['Hindi','Urdu', 'English', 'Both'],
     }],
     availableFormats: [{ 
         type: String, 
