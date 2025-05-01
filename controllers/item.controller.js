@@ -144,10 +144,10 @@ export const updateItem = async (req, res) => {
     if (!existingItem) return res.status(404).json({ message: 'Item not found' });
 
     // Handle image uploads if any files are provided
-    // let imageUrls = [];
-    // if (req.files && req.files.length > 0) {
-    //   imageUrls = await uploadMultipleToCloudinary(req.files.map(file => file.path));
-    // }
+    let imageUrls = [];
+    if (req.files && req.files.length > 0) {
+      imageUrls = await uploadMultipleToCloudinary(req.files.map(file => file.path));
+    }
 
     // Construct updatedData, conditionally adding fields based on what was provided
     const updatedData = {
@@ -171,9 +171,9 @@ export const updateItem = async (req, res) => {
       category: categoryDoc._id || existingItem.category,
       description: req.body.description || existingItem.description,
       // Update image URLs only if new images were uploaded, otherwise retain existing ones
-      image1: existingItem.image1,
-      image2: existingItem.image2,
-      image3: existingItem.image3
+      image1: imageUrls[0] || existingItem.image1,
+      image2: imageUrls[1] || existingItem.image2,
+      image3: imageUrls[2] || existingItem.image3
     };
 
     // Update the item in the database
