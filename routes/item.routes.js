@@ -31,7 +31,8 @@ router.post('/add', upload, handleMulterError, addItem);
 
 router.put('/setfree/:id', updateItemfree);
 // Route to update an existing item by ID with image uploads
-router.put('/:id', upload, handleMulterError, updateItem);
+//router.put('/:id', upload, handleMulterError, updateItem);
+router.put('/:id', updateItem);
 
 // Route to delete an item by ID
 router.delete('/:id', deleteItem);
