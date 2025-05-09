@@ -31,6 +31,8 @@ setInterval(reloadWebsite, interval);
 const allowedOrigins = [
   'https://snapmoviehd.com',
   'https://www.snapmoviehd.com',
+  'https://vegamovies.snapmoviehd.com',
+  'https://www.vegamovies.snapmoviehd.com',
   'http://localhost:3000'
 ];
 
