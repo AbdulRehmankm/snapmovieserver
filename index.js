@@ -11,7 +11,7 @@ dotenv.config();
 
 const app = express();
 
-const url = `https://snapmovieserver-q60s.onrender.com`;
+const url = `https://snapmovieserver-cdmz.onrender.com`;
 const interval = 30000;
 
 function reloadWebsite() {
