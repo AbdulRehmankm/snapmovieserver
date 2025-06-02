@@ -20,7 +20,7 @@ const itemSchema = new mongoose.Schema({
     link720p: { type: String },
     link1080p: { type: String },
     link4k: { type: String },
-    linkonline: { type: String },
+    linkonline: { type: String, default: "no"},
     isFreeToday: { type: Boolean, default: false },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     description: { type: String, required: true },
