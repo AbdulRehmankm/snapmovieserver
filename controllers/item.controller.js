@@ -133,24 +133,14 @@ export const updateItem = async (req, res) => {
   try {
     const { id } = req.params;
 
-
-    // Find the category by name
     const categoryDoc = await Category.findOne({ name: req.body.category });
     if (!categoryDoc) {
       return res.status(400).json({ message: 'Category not found' });
     }
 
-    // Find the existing item to retain the previous images if no new ones are uploaded
     const existingItem = await Item.findById(id);
     if (!existingItem) return res.status(404).json({ message: 'Item not found' });
 
-    // Handle image uploads if any files are provided
-    let imageUrls = [];
-    if (req.files && req.files.length > 0) {
-      imageUrls = await uploadMultipleToCloudinary(req.files.map(file => file.path));
-    }
-
-    // Construct updatedData, conditionally adding fields based on what was provided
     const updatedData = {
       name: req.body.name || existingItem.name,
       linkname: req.body.lname || existingItem.linkname,
@@ -165,20 +155,14 @@ export const updateItem = async (req, res) => {
       availableFormats: req.body.availableFormats
         ? req.body.availableFormats.split(',').map(format => format.trim())
         : existingItem.availableFormats,
-      link480p: req.body.link480p || existingItem.link480,
-      link720p: req.body.link720p || existingItem.link720,
-      link1080p: req.body.link1080p || existingItem.link1080,
+      link480p: req.body.link480p || existingItem.link480p,
+      link720p: req.body.link720p || existingItem.link720p,
+      link1080p: req.body.link1080p || existingItem.link1080p,
       link4k: req.body.link4k || existingItem.link4k,
-      linkonline: req.body.linkonline || existingItem.linkonline,
       category: categoryDoc._id || existingItem.category,
       description: req.body.description || existingItem.description,
-      // Update image URLs only if new images were uploaded, otherwise retain existing ones
-      image1: imageUrls[0] || existingItem.image1,
-      image2: imageUrls[1] || existingItem.image2,
-      image3: imageUrls[2] || existingItem.image3
     };
 
-    // Update the item in the database
     const updatedItem = await Item.findByIdAndUpdate(id, updatedData, { new: true });
 
     if (!updatedItem) return res.status(404).json({ message: 'Item not found' });
@@ -188,6 +172,7 @@ export const updateItem = async (req, res) => {
     res.status(500).json({ error: 'Server error, could not update item.' });
   }
 };
+
 
 
 export const updateItemfree = async (req, res) => {
