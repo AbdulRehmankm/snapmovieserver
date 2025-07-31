@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const itemSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    sname: { type: String, required: true, default: "snapmoviehd" },
     linkname: { type: String, unique: true },
     price: { type: Number, required: true, min: 0 },
     fullprice: { type: Number, required: true, min: 0 },
