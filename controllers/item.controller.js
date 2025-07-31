@@ -101,6 +101,7 @@ export const addItem = async (req, res) => {
 
     const newItem = new Item({
       name: req.body.name,
+      sname: req.body.sname,
       linkname: req.body.lname,
       price: req.body.price,
       fullprice: req.body.fullprice,
@@ -143,6 +144,7 @@ export const updateItem = async (req, res) => {
 
     const updatedData = {
       name: req.body.name || existingItem.name,
+      sname: req.body.sname || existingItem.sname,
       linkname: req.body.lname || existingItem.linkname,
       price: req.body.price || existingItem.price,
       fullprice: req.body.fullprice || existingItem.fullprice,
@@ -159,6 +161,7 @@ export const updateItem = async (req, res) => {
       link720p: req.body.link720p || existingItem.link720p,
       link1080p: req.body.link1080p || existingItem.link1080p,
       link4k: req.body.link4k || existingItem.link4k,
+      linkonline: req.body.linkonline || existingItem.linkonline,
       category: categoryDoc._id || existingItem.category,
       description: req.body.description || existingItem.description,
     };
