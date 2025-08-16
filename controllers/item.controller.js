@@ -15,7 +15,7 @@ import { uploadMultipleToCloudinary } from '../utils/cloudinary.js'; // Ensure t
 exports.getItems = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 20;
+        const limit = parseInt(req.query.limit) || 18;
         const skip = (page - 1) * limit;
 
         // Fetch sorted & paginated items
