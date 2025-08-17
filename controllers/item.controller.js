@@ -2,16 +2,43 @@ import Item from '../models/item.model.js'; // Adjust the path according to your
 import Category from '../models/category.model.js';
 import { uploadMultipleToCloudinary } from '../utils/cloudinary.js'; // Ensure the correct import for your upload functions
 
+// export const getItems = async (req, res) => {
+//   try {
+//     const items = await Item.find().populate('category'); // Adjust as necessary
+//     res.status(200).json({ items });
+//   } catch (error) {
+//     console.error('Error fetching items:', error);
+//     res.status(500).json({ error: 'Server error, could not fetch items.' });
+//   }
+// };
+
+// controller
 export const getItems = async (req, res) => {
   try {
-    const items = await Item.find().populate('category'); // Adjust as necessary
-    res.status(200).json({ items });
+    const page = parseInt(req.query.page) || 1;  // default 1
+    const limit = parseInt(req.query.limit) || 24;
+
+    const skip = (page - 1) * limit;
+
+    const items = await Item.find()
+      .populate('category')
+      .sort({ createdAt: -1 }) // newest first
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Item.countDocuments();
+
+    res.status(200).json({
+      items,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+    });
   } catch (error) {
     console.error('Error fetching items:', error);
     res.status(500).json({ error: 'Server error, could not fetch items.' });
   }
 };
-
 
 
 export const getItem = async (req, res) => {
