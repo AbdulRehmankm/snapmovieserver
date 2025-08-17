@@ -12,7 +12,7 @@ import { uploadMultipleToCloudinary } from '../utils/cloudinary.js'; // Ensure t
 //   }
 // };
 
-// controller
+
 export const getItems = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;  // default 1
@@ -69,32 +69,75 @@ export const getfreeItem = async (req, res) => {
     
 
 
+// export const getItemsByCategory = async (req, res) => {
+//   try {
+//     const { categoryName } = req.params; // Get the category name from the request
+
+//     // Find the category by name
+//     const category = await Category.findOne({ name: categoryName });
+
+//     // If no category found, return a 404
+//     if (!category) {
+//       return res.status(404).json({ message: 'Category not found' });
+//     }
+
+//     // Find items that belong to the found category's ObjectId
+//     const items = await Item.find({ category: category._id });
+
+//     // If no items found, return an appropriate message
+//     if (items.length === 0) {
+//       return res.status(404).json({ message: 'No items found for this category' });
+//     }
+
+//     res.status(200).json({ message: 'Items fetched successfully', items });
+//   } catch (error) {
+//     console.error('Error fetching items by category name:', error);
+//     res.status(500).json({ message: 'Server error, could not fetch items' });
+//   }
+// };
+
 export const getItemsByCategory = async (req, res) => {
   try {
-    const { categoryName } = req.params; // Get the category name from the request
+    const { categoryName } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 24;
+    const skip = (page - 1) * limit;
 
     // Find the category by name
     const category = await Category.findOne({ name: categoryName });
 
-    // If no category found, return a 404
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
 
-    // Find items that belong to the found category's ObjectId
-    const items = await Item.find({ category: category._id });
+    // Fetch items for that category with pagination + sort
+    const [items, total] = await Promise.all([
+      Item.find({ category: category._id })
+        .sort({ createdAt: -1 }) // newest first
+        .skip(skip)
+        .limit(limit)
+        .populate('category')
+        .lean(),
+      Item.countDocuments({ category: category._id })
+    ]);
 
-    // If no items found, return an appropriate message
     if (items.length === 0) {
       return res.status(404).json({ message: 'No items found for this category' });
     }
 
-    res.status(200).json({ message: 'Items fetched successfully', items });
+    res.status(200).json({
+      message: 'Items fetched successfully',
+      items,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+    });
   } catch (error) {
     console.error('Error fetching items by category name:', error);
     res.status(500).json({ message: 'Server error, could not fetch items' });
   }
 };
+
 
 export const getItemsBySearch = async (req, res) => {
   try {
