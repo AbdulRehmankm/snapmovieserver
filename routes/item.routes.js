@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   getItems,
+  getItemsall,
   addItem,
   updateItem,
   deleteItem,
@@ -16,6 +17,8 @@ const router = express.Router();
 
 // Route to fetch all items
 router.get('/', getItems);
+
+router.get('/all', getItemsall);
 
 router.get('/category/:categoryName', getItemsByCategory);
 
