@@ -2,15 +2,15 @@ import Item from '../models/item.model.js'; // Adjust the path according to your
 import Category from '../models/category.model.js';
 import { uploadMultipleToCloudinary } from '../utils/cloudinary.js'; // Ensure the correct import for your upload functions
 
-// export const getItems = async (req, res) => {
-//   try {
-//     const items = await Item.find().populate('category'); // Adjust as necessary
-//     res.status(200).json({ items });
-//   } catch (error) {
-//     console.error('Error fetching items:', error);
-//     res.status(500).json({ error: 'Server error, could not fetch items.' });
-//   }
-// };
+export const getItemsall = async (req, res) => {
+  try {
+    const items = await Item.find().populate('category'); // Adjust as necessary
+    res.status(200).json({ items });
+  } catch (error) {
+    console.error('Error fetching items:', error);
+    res.status(500).json({ error: 'Server error, could not fetch items.' });
+  }
+};
 
 
 export const getItems = async (req, res) => {
