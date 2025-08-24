@@ -44,7 +44,7 @@ router.put('/:id', upload, handleMulterError, updateItem);
 // Route to delete an item by ID
 router.delete('/:id', deleteItem);
 
-/ Main route - get all movies with online links
+// Main route - get all movies with online links
 router.get('/movies', getItemsallol);
 // Interaction routes
 router.put('/movie/:movieId/view', incrementViews);
