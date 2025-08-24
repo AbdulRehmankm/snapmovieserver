@@ -295,3 +295,143 @@ export const deleteItem = async (req, res) => {
     res.status(500).json({ error: 'Server error, could not delete item.' });
   }
 };
+
+
+// Get all movies with online links available ----------->
+export const getItemsallol = async (req, res) => {
+    try {
+        const items = await Item.find({ 
+            linkonline: { $ne: "no" },
+            type: "movie"
+        })
+        .populate('category')
+        .select('-comments') // Don't load all comments initially for better performance
+        .lean(); // Convert to plain JS objects for better performance
+        
+        res.status(200).json({ items });
+    } catch (error) {
+        console.error('Error fetching items:', error);
+        res.status(500).json({ error: 'Server error, could not fetch items.' });
+    }
+};
+
+// Keep other functions for interactions
+export const incrementViews = async (req, res) => {
+    try {
+        const { movieId } = req.params;
+        
+        const movie = await Item.findByIdAndUpdate(
+            movieId,
+            { $inc: { popularity: 1 } },
+            { new: true }
+        );
+        
+        if (!movie) {
+            return res.status(404).json({ error: 'Movie not found' });
+        }
+        
+        res.status(200).json({ 
+            message: 'View count updated',
+            views: movie.popularity 
+        });
+    } catch (error) {
+        console.error('Error incrementing views:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
+export const toggleLike = async (req, res) => {
+    try {
+        const { movieId } = req.params;
+        const { isLiked } = req.body;
+        
+        const increment = isLiked ? 1 : -1;
+        
+        const movie = await Item.findByIdAndUpdate(
+            movieId,
+            { $inc: { likes: increment } },
+            { new: true }
+        );
+        
+        if (!movie) {
+            return res.status(404).json({ error: 'Movie not found' });
+        }
+        
+        res.status(200).json({ 
+            message: isLiked ? 'Movie liked' : 'Movie unliked',
+            likes: movie.likes 
+        });
+    } catch (error) {
+        console.error('Error toggling like:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
+export const addComment = async (req, res) => {
+    try {
+        const { movieId } = req.params;
+        const { comment, username = 'Anonymous' } = req.body;
+
+        if (!comment || comment.trim().length === 0) {
+            return res.status(400).json({ error: 'Comment cannot be empty' });
+        }
+
+        const newComment = {
+            username: username.trim(),
+            comment: comment.trim(),
+            likes: 0,
+            createdAt: new Date()
+        };
+
+        const movie = await Item.findByIdAndUpdate(
+            movieId,
+            { 
+                $push: { comments: newComment },
+                $inc: { commentsCount: 1 }
+            },
+            { new: true }
+        );
+
+        if (!movie) {
+            return res.status(404).json({ error: 'Movie not found' });
+        }
+
+        const addedComment = movie.comments[movie.comments.length - 1];
+
+        res.status(201).json({ 
+            message: 'Comment added successfully',
+            comment: addedComment,
+            commentsCount: movie.commentsCount
+        });
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
+export const getComments = async (req, res) => {
+    try {
+        const { movieId } = req.params;
+        const { limit = 20, skip = 0 } = req.query;
+
+        const movie = await Item.findById(movieId)
+            .select('comments commentsCount name');
+
+        if (!movie) {
+            return res.status(404).json({ error: 'Movie not found' });
+        }
+
+        const sortedComments = movie.comments
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .slice(parseInt(skip), parseInt(skip) + parseInt(limit));
+
+        res.status(200).json({ 
+            comments: sortedComments,
+            totalComments: movie.commentsCount,
+            hasMore: (parseInt(skip) + parseInt(limit)) < movie.comments.length
+        });
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
