@@ -10,6 +10,11 @@ import {
   getfreeItem,
   updateItemfree,
   getItemsBySearch,
+  getItemsallol, 
+  incrementViews, 
+  toggleLike,
+  addComment,
+  getComments
 } from '../controllers/item.controller.js'; // Adjust the path as necessary
 import { upload, handleMulterError } from '../middlewares/multer.middleware.js'; // Adjust the path as necessary
 
@@ -38,5 +43,13 @@ router.put('/:id', upload, handleMulterError, updateItem);
 
 // Route to delete an item by ID
 router.delete('/:id', deleteItem);
+
+/ Main route - get all movies with online links
+router.get('/movies', getItemsallol);
+// Interaction routes
+router.put('/movie/:movieId/view', incrementViews);
+router.put('/movie/:movieId/like', toggleLike);
+router.post('/movie/:movieId/comment', addComment);
+router.get('/movie/:movieId/comments', getComments);
 
 export default router;
