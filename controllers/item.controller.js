@@ -298,22 +298,25 @@ export const deleteItem = async (req, res) => {
 
 
 // Get all movies with online links available ----------->
+
 export const getItemsallol = async (req, res) => {
     try {
+        // Get all movies with online streaming available
         const items = await Item.find({ 
             linkonline: { $ne: "no" },
             type: "movie"
         })
         .populate('category')
-        .select('-comments') // Don't load all comments initially for better performance
-        .lean(); // Convert to plain JS objects for better performance
+        .select('name sname linkname popularity rating linkonline category description image1 image2 image3 likes shares commentsCount language availableFormats createdAt')
+        .lean(); // Better performance
         
         res.status(200).json({ items });
     } catch (error) {
-        console.error('Error fetching items:', error);
-        res.status(500).json({ error: 'Server error, could not fetch items.' });
+        console.error('Error fetching movies for reels:', error);
+        res.status(500).json({ error: 'Server error, could not fetch movies.' });
     }
 };
+
 
 // Keep other functions for interactions
 export const incrementViews = async (req, res) => {
