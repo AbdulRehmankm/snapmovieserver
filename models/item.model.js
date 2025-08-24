@@ -28,6 +28,22 @@ const itemSchema = new mongoose.Schema({
     image1: { type: String }, // URL for image 1
     image2: { type: String }, // URL for image 2
     image3: { type: String }, // URL for image 3
+
+    // Social features
+    likes: { type: Number, default: 0 },
+    shares: { type: Number, default: 0 },
+    
+    // Comments as simple array of objects
+    comments: [{
+        username: { type: String, default: 'Anonymous' },
+        comment: { type: String, required: true },
+        likes: { type: Number, default: 0 },
+        createdAt: { type: Date, default: Date.now }
+    }],
+    commentsCount: { type: Number, default: 0 }
+
+    
+    
 }, { timestamps: true });
 
 const Item = mongoose.model('Item', itemSchema);
