@@ -15,24 +15,45 @@ export const getItemsall = async (req, res) => {
 
 export const getItems = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;  // default 1
+    const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 24;
-
     const skip = (page - 1) * limit;
 
-    const items = await Item.find()
-      .populate('category')
-      .sort({ createdAt: -1 }) // newest first
-      .skip(skip)
-      .limit(limit);
+    const items = await Item.aggregate([
+      {
+        $lookup: {
+          from: 'categories', // collection name (make sure it matches your MongoDB)
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      { $unwind: '$category' },
+      { $match: { 'category.name': { $ne: 'Adult' } } }, // ✅ exclude Adult
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit }
+    ]);
 
-    const total = await Item.countDocuments();
+    const total = await Item.aggregate([
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      { $unwind: '$category' },
+      { $match: { 'category.name': { $ne: 'Adult' } } },
+      { $count: 'count' }
+    ]);
 
     res.status(200).json({
       items,
-      total,
+      total: total[0]?.count || 0,
       page,
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil((total[0]?.count || 0) / limit)
     });
   } catch (error) {
     console.error('Error fetching items:', error);
