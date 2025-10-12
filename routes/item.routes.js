@@ -7,6 +7,7 @@ import {
   deleteItem,
   getItem,
   getItemsByCategory,
+  getItemsByCategoryall,
   getfreeItem,
   updateItemfree,
   getItemsBySearch,
@@ -26,6 +27,8 @@ router.get('/', getItems);
 router.get('/all', getItemsall);
 
 router.get('/category/:categoryName', getItemsByCategory);
+
+router.get('/categoryall/:categoryName', getItemsByCategoryall);
 
 router.get('/search/:query', getItemsBySearch);
 
