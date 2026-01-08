@@ -5,7 +5,7 @@ import { uploadToCloudinary } from '../utils/cloudinary.js';
 
 export const addToCart = async (req, res) => {
   try {
-    const { item, language, quality, price, token } = req.body;
+    const { item, language, quality, comment, price, token } = req.body;
     let iorder;
     if (token) {
       iorder = await Order.findOne({ _id: token, status: 'pending' });
@@ -13,36 +13,37 @@ export const addToCart = async (req, res) => {
 
     if (!iorder) {
       iorder = new Order({
-        items: [{ item, language, quality }],
+        items: [{ item, language, quality, comment }],
         totalPrice: price,
         status: 'pending',
       });
-    } else {
-      const existingItem = iorder.items.find(
-        (cartItem) =>
-          cartItem.item.toString() === item
-      );
+      }
+    //  else {
+    //   const existingItem = iorder.items.find(
+    //     (cartItem) =>
+    //       cartItem.item.toString() === item
+    //   );
   
-      if (existingItem) {
-        return res.status(200).json({message: 'Item already exists in the cart'});
-      }
-      else
-      {
-          iorder.items.push({ item, language, quality });
-      }
+      // if (existingItem) {
+      //   return res.status(200).json({message: 'Item already exists in the cart'});
+      // }
+      // else
+      // {
+          iorder.items.push({ item, language, quality, comment });
+      //}
     
     }
-    iorder.totalPrice = 0;
-    for (const orderItem of iorder.items) {
-      const item = await Item.findById(orderItem.item._id);
-      if (item) {
-        if (orderItem.quality === "4K") {
-          iorder.totalPrice = iorder.totalPrice + item.fullprice;
-        } else {
-          iorder.totalPrice = iorder.totalPrice + item.price;
-        }
-      }
-    }
+    // iorder.totalPrice = 0;
+    // for (const orderItem of iorder.items) {
+    //   const item = await Item.findById(orderItem.item._id);
+    //   if (item) {
+    //     if (orderItem.quality === "4K") {
+    //       iorder.totalPrice = iorder.totalPrice + item.fullprice;
+    //     } else {
+    //       iorder.totalPrice = iorder.totalPrice + item.price;
+    //     }
+    //   }
+    // }
   
     const savedOrder = await iorder.save();
     res.status(200).json({ message: 'Item added to cart', order: savedOrder, token: savedOrder._id });
