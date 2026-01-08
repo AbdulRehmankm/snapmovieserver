@@ -3,100 +3,53 @@ import Item from '../models/item.model.js';
 import { uploadToCloudinary } from '../utils/cloudinary.js'; 
 
 
-// export const addToCart = async (req, res) => {
-//   try {
-//     const { item, language, quality, comment, price, token } = req.body;
-//     let iorder;
-//     if (token) {
-//       iorder = await Order.findOne({ _id: token, status: 'pending' });
-//     }
-
-//     if (!iorder) {
-//       iorder = new Order({
-//         items: [{ item, language, quality, comment }],
-//         totalPrice: price,
-//         status: 'pending',
-//       });
-//       }
-    //  else {
-    //   const existingItem = iorder.items.find(
-    //     (cartItem) =>
-    //       cartItem.item.toString() === item
-    //   );
-  
-      // if (existingItem) {
-      //   return res.status(200).json({message: 'Item already exists in the cart'});
-      // }
-      // else
-      // {
-          // iorder.items.push({ item, language, quality, comment });
-      //}
-    
-    // }
-    // iorder.totalPrice = 0;
-    // for (const orderItem of iorder.items) {
-    //   const item = await Item.findById(orderItem.item._id);
-    //   if (item) {
-    //     if (orderItem.quality === "4K") {
-    //       iorder.totalPrice = iorder.totalPrice + item.fullprice;
-    //     } else {
-    //       iorder.totalPrice = iorder.totalPrice + item.price;
-    //     }
-    //   }
-    // }
-  
-//     const savedOrder = await iorder.save();
-//     res.status(200).json({ message: 'Item added to cart', order: savedOrder, token: savedOrder._id });
-//   } catch (error) {
-//     console.error('Error adding to cart:', error);
-//     res.status(500).json({ message: 'Internal server error', error });
-//   }
-// };
-
 export const addToCart = async (req, res) => {
   try {
     const { item, language, quality, comment, price, token } = req.body;
-
-    let iorder = null;
-
-    // Find existing pending order
+    let iorder;
     if (token) {
-      iorder = await Order.findOne({ _id: token, status: "pending" });
+      iorder = await Order.findOne({ _id: token, status: 'pending' });
     }
 
-    // Create new order if not found
     if (!iorder) {
       iorder = new Order({
-        items: [],
-        totalPrice: 0,
-        status: "pending",
+        items: [{ item, language, quality, comment }],
+        totalPrice: price,
+        status: 'pending',
       });
+      }
+     else {
+      const existingItem = iorder.items.find(
+        (cartItem) =>
+          cartItem.item.toString() === item
+      );
+  
+      if (existingItem) {
+        return res.status(200).json({message: 'Item already exists in the cart'});
+      }
+      else
+      {
+          iorder.items.push({ item, language, quality, comment });
+      }
+    
     }
-
-    // ALWAYS push item (same item allowed multiple times)
-    iorder.items.push({
-      item,
-      language,
-      quality,
-      comment,
-    });
-
-    // Increase total price
-    iorder.totalPrice += price;
-
+    iorder.totalPrice = 0;
+    for (const orderItem of iorder.items) {
+      const item = await Item.findById(orderItem.item._id);
+      if (item) {
+        if (orderItem.quality === "4K") {
+          iorder.totalPrice = iorder.totalPrice + item.fullprice;
+        } else {
+          iorder.totalPrice = iorder.totalPrice + item.price;
+        }
+      }
+    }
+  
     const savedOrder = await iorder.save();
-
-    res.status(200).json({
-      message: "Item added to cart",
-      order: savedOrder,
-      token: savedOrder._id,
-    });
+    res.status(200).json({ message: 'Item added to cart', order: savedOrder, token: savedOrder._id });
   } catch (error) {
-    console.error("Error adding to cart:", error);
-    res.status(500).json({
-      message: "Internal server error",
-      error,
-    });
+    console.error('Error adding to cart:', error);
+    res.status(500).json({ message: 'Internal server error', error });
   }
 };
 
