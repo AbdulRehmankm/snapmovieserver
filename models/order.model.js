@@ -6,6 +6,7 @@ const orderSchema = new mongoose.Schema({
         item: { type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true },
         language: { type: String, required: true },
         quality: { type: String, required: true },
+        comment: { type: String, required: true },
     } ],
     totalPrice: { type: Number, required: true },
     whnum: { type: String},
