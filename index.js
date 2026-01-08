@@ -36,6 +36,7 @@ const allowedOrigins = [
   'https://vegamovies.snapmoviehd.com',
   'https://www.vegamovies.snapmoviehd.com',
   'https://snapmoviehd.netlify.app',
+  'https://snapmoviehd18.netlify.app',
   'http://localhost:3000'
 ];
 
