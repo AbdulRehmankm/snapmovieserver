@@ -32,7 +32,7 @@ export const addToCart = async (req, res) => {
           iorder.items.push({ item, language, quality, comment });
       //}
     
-    }
+    // }
     // iorder.totalPrice = 0;
     // for (const orderItem of iorder.items) {
     //   const item = await Item.findById(orderItem.item._id);
