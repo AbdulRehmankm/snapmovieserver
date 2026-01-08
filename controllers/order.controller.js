@@ -5,7 +5,7 @@ import { uploadToCloudinary } from '../utils/cloudinary.js';
 
 export const addToCart = async (req, res) => {
   try {
-    const { item, language, quality, comment, price, token } = req.body;
+    const { item, language, quality, price, token } = req.body;
     let iorder;
     if (token) {
       iorder = await Order.findOne({ _id: token, status: 'pending' });
@@ -13,7 +13,7 @@ export const addToCart = async (req, res) => {
 
     if (!iorder) {
       iorder = new Order({
-        items: [{ item, language, quality, comment }],
+        items: [{ item, language, quality }],
         totalPrice: price,
         status: 'pending',
       });
@@ -29,7 +29,7 @@ export const addToCart = async (req, res) => {
       }
       else
       {
-          iorder.items.push({ item, language, quality, comment });
+          iorder.items.push({ item, language, quality });
       }
     
     }
