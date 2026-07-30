@@ -61,6 +61,51 @@ export const getItems = async (req, res) => {
   }
 };
 
+export const getItems2 = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 24;
+    const skip = (page - 1) * limit;
+
+    const items = await Item.aggregate([
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      { $unwind: '$category' },
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit }
+    ]);
+
+    const total = await Item.aggregate([
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      { $unwind: '$category' },
+      { $count: 'count' }
+    ]);
+
+    res.status(200).json({
+      items,
+      total: total[0]?.count || 0,
+      page,
+      pages: Math.ceil((total[0]?.count || 0) / limit)
+    });
+  } catch (error) {
+    console.error('Error fetching items:', error);
+    res.status(500).json({ error: 'Server error, could not fetch items.' });
+  }
+};
 
 export const getItem = async (req, res) => {
   try {
@@ -224,8 +269,8 @@ export const addItem = async (req, res) => {
     if (!categoryDoc) {
       return res.status(400).json({ message: 'Category not found' });
     }
-    // Handle image uploads
-    const imageUrls = await uploadMultipleToCloudinary(req.files.map(file => file.path));
+    const account = Number(req.body.account) || 1;
+    const imageUrls = await uploadMultipleToCloudinary(req.files.map(file => file.path),account);
 
     const newItem = new Item({
       name: req.body.name,
