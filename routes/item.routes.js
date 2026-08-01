@@ -12,6 +12,7 @@ import {
   getfreeItem,
   updateItemfree,
   getItemsBySearch,
+  getItemsBySearchadult,
   getItemsBySearch2,
   getItemsBySearchall,
   getItemsallol, 
@@ -34,6 +35,8 @@ router.get('/category/:categoryName', getItemsByCategory);
 router.get('/categoryall/:categoryName', getItemsByCategoryall);
 
 router.get('/search/:query', getItemsBySearch);
+
+router.get('/searchadult/:query', getItemsBySearchadult);
 
 router.get('/search2/:query', getItemsBySearch2);
 
