@@ -261,6 +261,41 @@ export const getItemsBySearch = async (req, res) => {
   }
 };
 
+export const getItemsBySearch2 = async (req, res) => {
+  try {
+    const { query } = req.params; // Get the search query from the request params
+
+    const items = await Item.aggregate([
+      {
+        $lookup: {
+          from: 'categories', // Must match your actual MongoDB collection name
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      { $unwind: '$category' },
+      {
+        $match: {
+          name: { $regex: query, $options: 'i' } // ✅ Case-insensitive search
+        }
+      },
+      { $sort: { createdAt: -1 } } // Optional sorting by newest
+    ]);
+
+    // If no items found
+    if (items.length === 0) {
+      return res.status(200).json({ message: 'No items found by search', items });
+    }
+
+    // Return the found items
+    res.status(200).json({ message: 'Items searched successfully', items });
+  } catch (error) {
+    console.error('Error fetching items by search query:', error);
+    res.status(500).json({ message: 'Server error, could not fetch items' });
+  }
+};
+
 
 export const addItem = async (req, res) => {
   try {
