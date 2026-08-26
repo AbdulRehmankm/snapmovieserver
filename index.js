@@ -29,17 +29,8 @@ const app = express();
 
 // Allowed origins
 const allowedOrigins = [
-  'https://snapmoviehd.com',
-  'https://www.snapmoviehd.com',
-  'https://adult.snapmoviehd.com',
-  'https://www.adult.snapmoviehd.com',
-  'https://vegamovies.snapmoviehd.com',
-  'https://www.vegamovies.snapmoviehd.com',
   'https://snapmoviehd.netlify.app',
   'https://www.snapmoviehd.netlify.app',
-  'https://snapmoviehd18.netlify.app',
-  'https://zeefliz.netlify.app',
-  'https://www.zeefliz.netlify.app',
   'http://localhost:3000'
 ];
 
