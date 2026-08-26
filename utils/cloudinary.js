@@ -43,15 +43,45 @@ export const uploadToCloudinary = (filePath, account = 1) => {
 };
 
 // Upload multiple images
-export const uploadMultipleToCloudinary = (filePaths, account = 1) => {
-  return Promise.all(
-    filePaths.map((filePath) => uploadToCloudinary(filePath, account))
-  )
-    .then((results) => results)
-    .catch((error) => {
-      throw new Error(
-        "Cloudinary multiple upload error: " + error.message
-      );
-    });
+// export const uploadMultipleToCloudinary = (filePaths, account = 1) => {
+//   return Promise.all(
+//     filePaths.map((filePath) => uploadToCloudinary(filePath, account))
+//   )
+//     .then((results) => results)
+//     .catch((error) => {
+//       throw new Error(
+//         "Cloudinary multiple upload error: " + error.message
+//       );
+//     });
+// };
+
+
+
+export const uploadMultipleToCloudinary = async (filePaths, account = 1) => {
+  const results = [];
+
+  try {
+    for (const filePath of filePaths) {
+      const url = await uploadToCloudinary(filePath, account);
+      results.push(url);
+    }
+
+    return results;
+  } catch (error) {
+    // Clean up any remaining local files if an upload fails
+    for (const filePath of filePaths) {
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (cleanupError) {
+          console.error("Error deleting file:", cleanupError);
+        }
+      }
+    }
+
+    throw new Error(
+      "Cloudinary multiple upload error: " + error.message
+    );
+  }
 };
 
