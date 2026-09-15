@@ -9,28 +9,13 @@ import groupRoutes from './routes/group.routes.js';
 import axios from "axios";
 
 
+
 const app = express();
-
-// const url = `https://snapmovieserver-ma0j.onrender.com`;
-// const interval = 30000;
-
-// function reloadWebsite() {
-//   axios
-//     .get(url)
-//     .then((response) => {
-//       console.log("website reloded");
-//     })
-//     .catch((error) => {
-//       console.error(`Error : ${error.message}`);
-//     });
-// }
-
-// setInterval(reloadWebsite, interval);
 
 // Allowed origins
 const allowedOrigins = [
-  'https://snapmoviehd.netlify.app',
-  'https://www.snapmoviehd.netlify.app',
+  'https://snapmoviehd.com',
+  'https://www.snapmoviehd.com',
   'http://localhost:3000'
 ];
 
@@ -64,12 +49,29 @@ app.use('/api/items', itemRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/group', groupRoutes);
 
+// Server
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// const url = `https://snapmovieserver-ma0j.onrender.com`;
+// const interval = 30000;
+
+// function reloadWebsite() {
+//   axios
+//     .get(url)
+//     .then((response) => {
+//       console.log("website reloded");
+//     })
+//     .catch((error) => {
+//       console.error(`Error : ${error.message}`);
+//     });
+// }
+
+// setInterval(reloadWebsite, interval);
+
+
 
 // Server
 // const PORT = process.env.PORT || 8000;
 // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-});
