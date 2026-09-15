@@ -12,6 +12,21 @@ import axios from "axios";
 
 const app = express();
 
+const url = `https://snapmovieserver-ma0j.onrender.com`;
+const interval = 30000;
+
+function reloadWebsite() {
+  axios
+    .get(url)
+    .then((response) => {
+      console.log("website reloded");
+    })
+    .catch((error) => {
+      console.error(`Error : ${error.message}`);
+    });
+}
+setInterval(reloadWebsite, interval);
+
 // Allowed origins
 const allowedOrigins = [
   'https://snapmoviehd.com',
