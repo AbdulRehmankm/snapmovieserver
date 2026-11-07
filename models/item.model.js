@@ -9,7 +9,7 @@ const itemSchema = new mongoose.Schema({
     popularity: { type: Number, default: 0 },
     rating: { type: Number, min: 0, max: 5, default: 0 },
     releaseDate: { type: Date, required: true },
-    type: { type: String, enum: ['movie', 'series'], required: true },
+    type: { type: String, enum: ['movie', 'series', 'video', 'link1', 'link2'], required: true },
     language: [{ 
         type: String,
     }],
@@ -22,7 +22,6 @@ const itemSchema = new mongoose.Schema({
     link1080p: { type: String },
     link4k: { type: String },
     linkonline: { type: String, default: "no"},
-    linktype: { type: String, default: "N"},
     isFreeToday: { type: Boolean, default: false },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     description: { type: String, required: true },
