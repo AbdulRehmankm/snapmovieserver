@@ -424,6 +424,7 @@ export const updateItem = async (req, res) => {
       link1080p: req.body.link1080p || existingItem.link1080p,
       link4k: req.body.link4k || existingItem.link4k,
       linkonline: req.body.linkonline || existingItem.linkonline,
+      linktype: req.body.linktype || existingItem.linktype,
       category: categoryDoc._id || existingItem.category,
       description: req.body.description || existingItem.description,
     };
