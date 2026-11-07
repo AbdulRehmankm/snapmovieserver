@@ -375,6 +375,7 @@ export const addItem = async (req, res) => {
       link1080p: req.body.link1080p,
       link4k: req.body.link4k,
       linkonline: req.body.linkonline,
+      linktype: req.body.linktype,
       category: categoryDoc._id, // Use the ObjectId of the found category
       description: req.body.description,
       image1: imageUrls[0], // Store first image URL
